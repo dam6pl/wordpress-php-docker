@@ -11,4 +11,3 @@ if [ "${ENABLE_XDEBUG}" != "1" ]; then
 fi
 
 service php-fpm restart
-exec /usr/local/bin/docker-entrypoint.sh "$@"
