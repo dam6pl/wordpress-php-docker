@@ -2,12 +2,12 @@
 
 # Load BlackFire
 if [ "${ENABLE_BLACKFIRE}" != "1" ]; then
-	rm /usr/local/etc/php/conf.d/blackfire.ini
+	rm -f /usr/local/etc/php/conf.d/blackfire.ini
 fi
 
 # Load xDebug
 if [ "${ENABLE_XDEBUG}" != "1" ]; then
-	rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+	rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 fi
 
 service php-fpm restart

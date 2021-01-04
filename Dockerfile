@@ -10,13 +10,13 @@ RUN pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && docker-php-source delete \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.remote_enable=1" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.remote_autostart=1" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.remote_port=9000" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.mode=debug" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.start_with_request=yes" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.client_host=host.docker.internal" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.client_port=9000" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
     && echo "xdebug.remote_handler=dbgp" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.remote_connect_back=0" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.idekey=PHPSTORM" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.remote_host=host.docker.internal" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
+    && echo "xdebug.discover_client_host=0" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.idekey=PHPSTORM" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
 
 # Install the Symfony VarDumper component
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
