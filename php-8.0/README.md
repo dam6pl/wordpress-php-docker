@@ -1,6 +1,6 @@
-# WordPress PHP docker image
+# WordPress PHP 8.0 docker image
 
-WordPress PHP docker image extends by xDebug and Blackfire extensions.
+WordPress PHP 8.0 docker image extends by xDebug and Blackfire extensions.
 
 Docker image for increase development experience allows the use xDebug and Blackfire extensions for increase performance and better debugging.
 
