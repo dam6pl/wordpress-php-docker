@@ -129,19 +129,19 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
     && echo "auto_prepend_file=/var/www/vendor/autoload.php" >> "$PHP_INI_DIR/php.ini-development"
 
 # Install BlackFire extension
-# RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
-#     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
-#     && mkdir -p /tmp/blackfire \
-#     && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp/blackfire \
-#     && mv /tmp/blackfire/blackfire-*.so $(php -r "echo ini_get ('extension_dir');")/blackfire.so \
-#     && echo "extension=blackfire.so" >> "$PHP_INI_DIR/conf.d/blackfire.ini" \
-#     && echo "blackfire.agent_socket=tcp://blackfire:8707" >> "$PHP_INI_DIR/conf.d/blackfire.ini" \
-#     && rm -rf /tmp/blackfire /tmp/blackfire-probe.tar.gz
+RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
+    && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
+    && mkdir -p /tmp/blackfire \
+    && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp/blackfire \
+    && mv /tmp/blackfire/blackfire-*.so $(php -r "echo ini_get ('extension_dir');")/blackfire.so \
+    && echo "extension=blackfire.so" >> "$PHP_INI_DIR/conf.d/blackfire.ini" \
+    && echo "blackfire.agent_socket=tcp://blackfire:8707" >> "$PHP_INI_DIR/conf.d/blackfire.ini" \
+    && rm -rf /tmp/blackfire /tmp/blackfire-probe.tar.gz
 
 # Install WP CLI
-# RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-#     && chmod +x wp-cli.phar \
-#     && mv wp-cli.phar /usr/local/bin/wp
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
 
 # Cleanup
 RUN apt-get clean
