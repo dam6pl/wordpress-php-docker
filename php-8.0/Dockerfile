@@ -109,6 +109,10 @@ COPY docker-entrypoint.sh /usr/local/bin/
 ### ADD CUSTOM EXTENSIONS ###
 #############################
 
+RUN set -eux; \
+    apt-get update; \
+    apt-get install less;
+
 # Install the xDebug PHP excension
 # RUN pecl install xdebug \
 #     && docker-php-ext-enable xdebug \
