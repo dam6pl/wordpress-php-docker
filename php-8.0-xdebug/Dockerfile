@@ -1,8 +1,6 @@
 FROM php:8.0-fpm
 
-LABEL org.opencontainers.image.title="WordPress PHP 8"
-LABEL org.opencontainers.image.authors="Damian Nowak <me@dnowak.dev>"
-LABEL org.opencontainers.image.source="https://github.com/dam6pl/wordpress-php-docker"
+LABEL org.opencontainers.image.source=https://github.com/iamdripfeed/wordpress-local
 
 # persistent dependencies
 RUN set -eux; \
@@ -118,17 +116,17 @@ RUN set -eux; \
     apt-get install less;
 
 # Install the xDebug PHP excension
-# RUN pecl install xdebug \
-#     && docker-php-ext-enable xdebug \
-#     && docker-php-source delete \
-#     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-#     && echo "xdebug.mode=debug" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-#     && echo "xdebug.start_with_request=yes" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-#     && echo "xdebug.client_host=host.docker.internal" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-#     && echo "xdebug.client_port=9000" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-#     && echo "xdebug.remote_handler=dbgp" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-#     && echo "xdebug.discover_client_host=0" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-#     && echo "xdebug.idekey=PHPSTORM" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && docker-php-source delete \
+    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.mode=debug" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.start_with_request=yes" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.client_host=host.docker.internal" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.client_port=9000" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.remote_handler=dbgp" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.discover_client_host=0" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.idekey=PHPSTORM" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
 
 # Install the Symfony VarDumper component
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \

@@ -1,5 +1,9 @@
 FROM wordpress:php7.4-fpm
 
+LABEL org.opencontainers.image.title="WordPress PHP 7.4"
+LABEL org.opencontainers.image.authors="Damian Nowak <me@dnowak.dev>"
+LABEL org.opencontainers.image.source="https://github.com/dam6pl/wordpress-php-docker"
+
 # Update image packages
 RUN apt-get update \
     && apt-get install --no-install-recommends --assume-yes --quiet ca-certificates curl git \
