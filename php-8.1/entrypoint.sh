@@ -5,7 +5,7 @@ if [ "${ENABLE_BLACKFIRE}" != "1" ]; then
 	rm -f /usr/local/etc/php/conf.d/blackfire.ini
 fi
 
-# Load xDebug
+Load xDebug
 if [ "${ENABLE_XDEBUG}" != "1" ]; then
 	rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 fi

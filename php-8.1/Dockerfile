@@ -1,4 +1,4 @@
-FROM php:8.0-fpm
+FROM php:8.1-fpm
 
 # persistent dependencies
 RUN set -eux; \
@@ -95,8 +95,8 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/error-logging.ini
 
 RUN set -eux; \
-	version='5.8.3'; \
-	sha1='3be7ed4dc6f46fe98271b974c88153640e95ad49'; \
+	version='5.8.2'; \
+	sha1='c3b1b59553eafbf301c83b14c5eeae4cf1c86044'; \
 	\
 	curl -o wordpress.tar.gz -fL "https://wordpress.org/wordpress-$version.tar.gz"; \
 	echo "$sha1 *wordpress.tar.gz" | sha1sum -c -; \
@@ -104,6 +104,23 @@ RUN set -eux; \
 # upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
 	tar -xzf wordpress.tar.gz -C /usr/src/; \
 	rm wordpress.tar.gz; \
+	\
+# https://wordpress.org/support/article/htaccess/
+	[ ! -e /usr/src/wordpress/.htaccess ]; \
+	{ \
+		echo '# BEGIN WordPress'; \
+		echo ''; \
+		echo 'RewriteEngine On'; \
+		echo 'RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]'; \
+		echo 'RewriteBase /'; \
+		echo 'RewriteRule ^index\.php$ - [L]'; \
+		echo 'RewriteCond %{REQUEST_FILENAME} !-f'; \
+		echo 'RewriteCond %{REQUEST_FILENAME} !-d'; \
+		echo 'RewriteRule . /index.php [L]'; \
+		echo ''; \
+		echo '# END WordPress'; \
+	} > /usr/src/wordpress/.htaccess; \
+	\
 	chown -R www-data:www-data /usr/src/wordpress; \
 # pre-create wp-content (and single-level children) for folks who want to bind-mount themes, etc so permissions are pre-created properly instead of root:root
 # wp-content/cache: https://github.com/docker-library/wordpress/issues/534#issuecomment-705733507
@@ -117,6 +134,7 @@ RUN set -eux; \
 
 VOLUME /var/www/html
 
+# COPY --chown=www-data:www-data wp-config-docker.php /usr/src/wordpress/
 COPY docker-entrypoint.sh /usr/local/bin/
 
 #############################
@@ -126,6 +144,19 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN set -eux; \
     apt-get update; \
     apt-get install less;
+
+# Install the xDebug PHP excension
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && docker-php-source delete \
+    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.mode=debug" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.start_with_request=yes" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.client_host=host.docker.internal" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.client_port=9000" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.remote_handler=dbgp" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.discover_client_host=0" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
+    && echo "xdebug.idekey=PHPSTORM" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
 
 # Install the Symfony VarDumper component
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
@@ -147,19 +178,6 @@ RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
-
-# Install the xDebug PHP excension
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug \
-    && docker-php-source delete \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.mode=debug" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.start_with_request=yes" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.client_host=host.docker.internal" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.client_port=9000" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.remote_handler=dbgp" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.discover_client_host=0" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" \
-    && echo "xdebug.idekey=PHPSTORM" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
 
 # Cleanup
 RUN apt-get clean
