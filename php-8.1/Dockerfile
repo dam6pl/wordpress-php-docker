@@ -17,6 +17,7 @@ RUN set -ex; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		libfreetype6-dev \
+		libicu-dev \
 		libjpeg-dev \
 		libmagickwand-dev \
 		libpng-dev \
@@ -33,6 +34,7 @@ RUN set -ex; \
 		bcmath \
 		exif \
 		gd \
+		intl \
 		mysqli \
 		zip \
 	; \
@@ -95,8 +97,8 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/error-logging.ini
 
 RUN set -eux; \
-	version='5.8.2'; \
-	sha1='c3b1b59553eafbf301c83b14c5eeae4cf1c86044'; \
+	version='6.0'; \
+	sha1='7a5a6d0591771e730b05c49d0c3fc134624d0491'; \
 	\
 	curl -o wordpress.tar.gz -fL "https://wordpress.org/wordpress-$version.tar.gz"; \
 	echo "$sha1 *wordpress.tar.gz" | sha1sum -c -; \
