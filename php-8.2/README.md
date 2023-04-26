@@ -14,6 +14,14 @@ xDebug extension can be enabled by adding the followed key in the `environment` 
 ENABLE_XDEBUG: 1
 ```
 
+## How to enable Redis extension?
+
+Redis extension can be enabled by adding the followed key in the `environment` section:
+
+```yml
+ENABLE_REDIS: 1
+```
+
 ## How to enable BlackFire extension?
 
 Blackfire extension, like xDebug, can be enabled by adding the followed key in the `environment` section:

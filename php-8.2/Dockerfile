@@ -147,6 +147,12 @@ RUN set -eux; \
     apt-get update; \
     apt-get install less;
 
+# Install the Redis PHP extension
+RUN pecl install redis \
+    && docker-php-ext-enable redis \
+    && docker-php-source delete \
+    && echo "extension=$(find /usr/local/lib/php/extensions/ -name redis.so)" > "$PHP_INI_DIR/conf.d/docker-php-ext-redis.ini"
+
 # Install the xDebug PHP excension
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug \
